@@ -3,6 +3,7 @@ package com.isabella.test;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -85,6 +86,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     List<Integer> intList = new ArrayList<>();
+    int a=0;
 
     private void initPopuWindow() {
         /**
@@ -137,41 +139,59 @@ public class MainActivity extends AppCompatActivity {
 
             }
 
+
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+
                 //当总条目不为0的时候说明有数据
                 if (totalItemCount != 0) {
                     //当传入的标签名不为null说明是悬浮标签的popupWindow,走下面的代码块
                     if (list.get(firstVisibleItem).getGroup() != null) {
                         //设置为当前标签名
-                        textView.setText(list.get(firstVisibleItem).getGroup());
-                        //当时第一条时
-                        if (list.get(firstVisibleItem).isTemp()) {
-                            // textView.setVisibility(View.GONE);
-                            //判断是否是第一条的数据,因为下方改变了temp的值
-                            //所以需要这个值来判断
-                            //用于在数据倒着滑的时候显示第一条的标签
-                            for (int i1 = 0; i1 < intList.size(); i1++) {
-                                if (i1 == firstVisibleItem) {
-                                    list.get(firstVisibleItem).setTemp(true);
-                                    adapter.notifyDataSetChanged();
-                                }
-                            }
-                        } else {
-                            //用于数据在正着滑的时候隐藏标签
+                        textView.setText(list.get(view.getFirstVisiblePosition()).getGroup());
+                        //当不是第一条时
+                        if (!list.get(view.getFirstVisiblePosition()).isTemp()) {
                             if (textView.getVisibility() != View.VISIBLE) {
                                 textView.setVisibility(View.VISIBLE);
                             }
-                            //把是true的position添加到iniList里面,方便返回去的时候查询使用
-                            intList.add(firstVisibleItem);
-                            //把temp设置为false  因为这里变成false,没有判断的依据了.所以需要添加一个新的标记 iniList
-                            list.get(firstVisibleItem).setTemp(false);
-                            adapter.notifyDataSetChanged();
-                            //  textView.setText(list.get(firstVisibleItem).getGroup());
+
+
+                            if (a != firstVisibleItem) {
+                                if (intList.size() != 0) {
+                                    a = firstVisibleItem;
+                                    //判断是否是第一条的数据,因为下方改变了temp的值
+                                    //所以需要这个值来判断
+                                    //用于在数据倒着滑的时候显示第一条的标签
+                                    for (int i1 = 0; i1 < intList.size(); i1++) {
+                                        Log.d("MainActivity", "i1:" + intList.get(i1));
+                                        Log.d("MainActivity", "lv.getFirstVisiblePosition():" + lv.getFirstVisiblePosition());
+                                        Log.d("MainActivity", "intList.get(i1) == lv.getFirstVisiblePosition():" + (intList.get(i1) == lv.getFirstVisiblePosition()));
+                                        if (intList.get(i1) == lv.getFirstVisiblePosition()) {
+
+                                            list.get(lv.getFirstVisiblePosition()).setTemp(true);
+                                            adapter.notifyDataSetChanged();
+                                        }
+                                    }
+                                }
+
+
+                            }
+
+                        } else {
+                            //标记位,用于标记同一个条目只能走一遍
+                            if (a != firstVisibleItem) {
+                                //把是true的position添加到iniList里面,方便返回去的时候查询使用
+                                intList.add(view.getFirstVisiblePosition());
+                                Log.d("MainActivity", "list.get(lv.getFirstVisiblePosition()).isTemp():" + list.get(view.getFirstVisiblePosition()).isTemp());
+                                //用于数据在正着滑的时候隐藏标签
+                                //把temp设置为false  因为这里变成false,没有判断的依据了.所以需要添加一个新的标记 iniList
+                                list.get(view.getFirstVisiblePosition()).setTemp(false);
+                                a = firstVisibleItem;
+                                adapter.notifyDataSetChanged();
+                            }
                         }
                     }
                 }
-
             }
         });
 
@@ -193,7 +213,7 @@ public class MainActivity extends AppCompatActivity {
             list.add(new Bean("Test" + i, "意见", false));
         }
         list.add(new Bean("Test" + 13, "举报", true));
-        for (int i = 14; i < 20; i++) {
+        for (int i = 14; i < 21; i++) {
             list.add(new Bean("Test" + i, "举报", false));
         }
         //必须刷新
