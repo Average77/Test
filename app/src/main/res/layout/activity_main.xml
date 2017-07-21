@@ -13,7 +13,7 @@
         android:id="@+id/button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="弹出带取消按钮popupwindow"
+        android:text="弹出simple popupwindow"
         tools:layout_editor_absoluteX="75dp"
         tools:layout_editor_absoluteY="62dp" />
 
@@ -21,7 +21,7 @@
         android:id="@+id/button1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="弹出投诉分组popupwindow"
+        android:text="弹出悬浮标签popupwindow"
         tools:layout_editor_absoluteX="75dp"
         tools:layout_editor_absoluteY="125dp" />
 
